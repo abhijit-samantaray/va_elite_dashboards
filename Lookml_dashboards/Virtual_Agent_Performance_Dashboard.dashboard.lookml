@@ -1,4 +1,4 @@
-- dashboard: virtual_agent_analytics
+- dashboard: virtual_agent_analytics_1
   title: Virtual Agent analytics
   layout: newspaper
   preferred_viewer: dashboards-next
