@@ -16,6 +16,90 @@ view: ccai_session_data {
     sql: ${TABLE}.conversation_length_in_seconds ;;
   }
 
+  dimension: agentTransfer_reason {
+    type: string
+    sql: ${TABLE}.Is_agent_transfer_reason ;;
+  }
+
+  dimension: agentTransfer_flag_original {
+    type: number
+    sql: ${TABLE}.Is_agent_transfer ;;
+  }
+
+  dimension: agentTransfer_flag {
+    type: number
+    sql: case when ${agentTransfer_flag_original}=1 and ${agentTransfer_reason}!="NO_INPUT" then 1 else 0 end ;;
+  }
+
+  dimension: requested_agent_flag {
+    type: number
+    sql: ${TABLE}.is_planned_agent_transfer ;;
+    #dummy data thats why is planned agent transfer column is used
+  }
+
+  dimension: caller_requested_agent_transfer {
+    type: number
+    sql: case when ${agentTransfer_flag} = 1 and ${requested_agent_flag} = 1 then 1 else 0 end;;
+  }
+
+  dimension: plannedAgentTransfer_flag {
+    type: number
+    hidden: yes
+    sql: ${TABLE}.is_planned_agent_transfer ;;
+  }
+
+  dimension: planned_flag {
+    type: number
+    sql: case when ${agentTransfer_flag} = 1 and ${plannedAgentTransfer_flag} = 1 then 1 else 0 end ;;
+  }
+
+  dimension: unplanned_flag {
+    type: number
+    sql: case when ${agentTransfer_flag} = 1 and ${plannedAgentTransfer_flag} = 0 then 1 else 0 end ;;
+  }
+
+  dimension: containment_flag {
+    label: "deflected_flag"
+    type: number
+    sql: ${TABLE}.is_contained = 0 ;;
+
+    # --case when (((${flow_count} = ${flowEnd_count} and ${flow_count} != 0) OR ${isbacktomainmenu_flag}=1)  and ${agentTransfer_flag}=0)
+    #     --or (${agentTransfer_reason}="NO_INPUT" and ${agentTransfer_flag_original}=1)
+    #     --or (${planned_flag}=1) then 1 else 0 end ;;
+  }
+
+  dimension: containment_flag_excluding_AT {
+    label: "containment_flag"
+    type: number
+    sql: ${TABLE}.is_contained = 1 ;;
+
+    # --case when (((${flow_count} = ${flowEnd_count} and ${flow_count} != 0) OR ${isbacktomainmenu_flag}=1)  and ${agentTransfer_flag}=0)
+    #     --or (${agentTransfer_reason}="NO_INPUT" and ${agentTransfer_flag_original}=1)
+    # --then 1 else 0 end ;;
+  }
+
+# dimension: containment_flag {
+#   type: number
+#   sql: case when ${containment_flag_excluding_AT} = 1 or ${planned_flag} = 1 then 1 else 0 end ;;
+# }
+
+  dimension: hung_up_flag {
+    type: number
+    sql:${TABLE}.is_hungup = 1 ;;
+
+    # case when ${agentTransfer_flag}=0 and ${containment_flag_excluding_AT}=0 then 1 else 0 end ;;
+  }
+
+  dimension: call_type {
+    type: string
+    sql: case when (((${containment_flag_excluding_AT}=1)  and ${agentTransfer_flag}=0)
+        or (${agentTransfer_reason}="NO_INPUT" and ${agentTransfer_flag_original}=1) then "Contained Calls"
+        when ${agentTransfer_flag}=0 and ${hung_up_flag}=1 then "Hungup Calls"
+        when ${agentTransfer_flag} = 1 and ${plannedAgentTransfer_flag} = 1 then "Planned Agent Transfer"
+        when ${agentTransfer_flag} = 1 and ${requested_agent_flag} = 1 then "Unplanned Agent Transfers [Caller Requested]"
+        else "Unplanned Agent Transfer [Others]" end;;
+  }
+
   # A measure is a field that uses a SQL aggregate function. Here are defined sum and average
   # measures for this dimension, but you can also add measures of many different aggregates.
   # Click on the type parameter to see all the options in the Quick Help panel on the right.
@@ -63,6 +147,16 @@ view: ccai_session_data {
     label: "Exit Action"
     type: string
     sql: ${TABLE}.exit_intent ;;
+  }
+
+  dimension: entry_page {
+    type: string
+    sql: ${TABLE}.entry_page ;;
+  }
+
+  dimension: exit_page {
+    type: string
+    sql: ${TABLE}.exit_page ;;
   }
 
   dimension: first_intent {
@@ -232,6 +326,26 @@ view: ccai_session_data {
     sql: ${TABLE}.sentiment_score;;
   }
 
+  dimension: Planned_Unplanned {
+    label: "Agent Transfer Breakdown"
+    type: string
+    sql: case when ${agentTransfer_flag} = 1 and ${plannedAgentTransfer_flag} = 1 then "Planned Agent Transfer"
+            when ${agentTransfer_flag} = 1 and ${plannedAgentTransfer_flag} = 0 then "UnPlanned Agent Transfer"
+            else "No Agent Transfer" end ;;
+  }
+
+  dimension: second_last_exit_intent {
+    label: "Exit Action Breakdown"
+    type: string
+    sql: ${TABLE}.second_last_exit_intent ;;
+  }
+
+  dimension: second_last_exit_page {
+    label: "Exit Page Breakdown"
+    type: string
+    sql: ${TABLE}.second_last_exit_page ;;
+  }
+
   dimension: session_id {
     label: "Call ID"
     type: string
@@ -268,6 +382,92 @@ view: ccai_session_data {
     sql: trunc(round(${TABLE}.sentiment_score,3),3) ;;
     value_format: "0.000"
   }
+
+  measure: total_planned_agent {
+    type: sum_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${planned_flag} ;;
+  }
+
+  measure: total_unplanned_agent {
+    type: sum_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${unplanned_flag} ;;
+  }
+
+  measure: total_unplanned_agent_transfer_percent {
+    type: number
+    sql: round((${total_unplanned_agent}/${total_agent_transfer})*100,2) ;;
+  }
+
+  measure: total_agent_transfer {
+    type: sum_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${agentTransfer_flag} ;;
+  }
+
+  measure: total_contained_calls {
+    type: sum_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${containment_flag_excluding_AT} ;;
+  }
+
+  measure: total_hung_up_calls {
+    type: sum_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${hung_up_flag} ;;
+  }
+
+  measure: containment_rate {
+    label: "deflected_rate"
+    type: average_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql:${containment_flag} ;;
+    value_format: "0.00%"
+  }
+
+  measure: containment_rate_excluding_AT {
+    label: "containment_rate"
+    type: average_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${containment_flag_excluding_AT} ;;
+    value_format: "0.00%"
+  }
+
+  measure: hung_up_rate {
+    type: average_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${hung_up_flag} ;;
+    value_format: "0.00%"
+  }
+
+  measure: agent_routing_rate {
+    type: average_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${agentTransfer_flag} ;;
+    value_format: "0.00%"
+  }
+
+  measure: caller_requested_agent_transfer_rate{
+    type: average_distinct
+    sql_distinct_key: ${session_id};;
+    sql: ${caller_requested_agent_transfer} ;;
+    value_format: "0.00%"
+  }
+
+#### metrics with embedded titles
+  measure: containment_rate_with_title {
+    type: number
+    sql: ${containment_rate} ;;
+    html: {{value | number_with_delimiter | divided_by: 1 | round: 4 | times: 100}}% <br><h4 style="margin-top:0; font-size: 16px;">Containment Rate</h4>;;
+  }
+
+  measure: agent_routing_rate_with_title {
+    type: number
+    sql: ${agent_routing_rate} ;;
+    html: {{value | number_with_delimiter | divided_by: 1 | round: 4 | times: 100}}% <br><h4 style="margin-top:0; font-size: 16px;">Agent Transfer Rate</h4>;;
+  }
+####
 
 
 }

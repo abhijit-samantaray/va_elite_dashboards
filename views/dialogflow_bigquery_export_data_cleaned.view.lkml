@@ -27,6 +27,11 @@ view: dialogflow_bigquery_export_data_cleaned {
     sql: ${TABLE}.intent_detection_confidence ;;
   }
 
+  dimension: phone_number{
+    type: string
+    sql: ${TABLE}.phone_number ;;
+  }
+
   dimension: intent_triggered {
     type: string
     sql: ${TABLE}.intent_triggered ;;
@@ -97,6 +102,20 @@ view: dialogflow_bigquery_export_data_cleaned {
     ]
     datatype: datetime
     sql: ${TABLE}.request_time_ist ;;
+  }
+
+  dimension_group: response {
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.response_time ;;
   }
 
   dimension: time_bucket {
