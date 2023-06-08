@@ -76,6 +76,7 @@ view: dialogflow_bigquery_export_data_cleaned {
       date,
       week,
       month,
+      month_name,
       quarter,
       hour_of_day,
       day_of_week,
@@ -310,6 +311,18 @@ view: dialogflow_bigquery_export_data_cleaned {
     type: average
     sql: ${intent_detection_confidence} ;;
     value_format: "0.00"
+  }
+
+  measure: Handled_Queries {
+    type: count_distinct
+    sql: ${response_id} ;;
+    filters: [match_type: "DIRECT_INTENT, INTENT, NO_INPUT, PARAMETER_FILLING"]
+  }
+
+  measure: Unhandled_Queries {
+    type: count_distinct
+    sql: ${response_id} ;;
+    filters: [match_type: "NO_MATCH"]
   }
 
   measure: agent_routing_rate {

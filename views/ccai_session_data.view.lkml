@@ -26,6 +26,11 @@ view: ccai_session_data {
     sql: ${TABLE}.Is_agent_transfer ;;
   }
 
+  dimension: agent_transfer_failure {
+    type: string
+    sql: ${TABLE}.agent_transfer_failure ;;
+  }
+
   dimension: agentTransfer_flag {
     type: number
     sql: case when ${agentTransfer_flag_original}=1 and ${agentTransfer_reason}!="NO_INPUT" then 1 else 0 end ;;
@@ -61,21 +66,17 @@ view: ccai_session_data {
   dimension: containment_flag {
     label: "deflected_flag"
     type: number
-    sql: ${TABLE}.is_contained = 0 ;;
-
-    # --case when (((${flow_count} = ${flowEnd_count} and ${flow_count} != 0) OR ${isbacktomainmenu_flag}=1)  and ${agentTransfer_flag}=0)
-    #     --or (${agentTransfer_reason}="NO_INPUT" and ${agentTransfer_flag_original}=1)
-    #     --or (${planned_flag}=1) then 1 else 0 end ;;
+    sql: case when (((${TABLE}.is_contained=1)  and ${agentTransfer_flag}=0)
+          or (${agentTransfer_reason}="NO_INPUT" and ${agentTransfer_flag_original}=1)
+          or (${planned_flag}=1)) then 1 else 0 end ;;
   }
 
   dimension: containment_flag_excluding_AT {
     label: "containment_flag"
     type: number
-    sql: ${TABLE}.is_contained = 1 ;;
-
-    # --case when (((${flow_count} = ${flowEnd_count} and ${flow_count} != 0) OR ${isbacktomainmenu_flag}=1)  and ${agentTransfer_flag}=0)
-    #     --or (${agentTransfer_reason}="NO_INPUT" and ${agentTransfer_flag_original}=1)
-    # --then 1 else 0 end ;;
+    sql: case when (((${TABLE}.is_contained =1)  and ${agentTransfer_flag}=0)
+          or (${agentTransfer_reason}="NO_INPUT" and ${agentTransfer_flag_original}=1))
+      then 1 else 0 end;;
   }
 
 # dimension: containment_flag {
@@ -93,11 +94,16 @@ view: ccai_session_data {
   dimension: call_type {
     type: string
     sql: case when (((${containment_flag_excluding_AT}=1)  and ${agentTransfer_flag}=0)
-        or (${agentTransfer_reason}="NO_INPUT" and ${agentTransfer_flag_original}=1) then "Contained Calls"
-        when ${agentTransfer_flag}=0 and ${hung_up_flag}=1 then "Hungup Calls"
+        or (${agentTransfer_reason}="NO_INPUT" and ${agentTransfer_flag_original}=1)) then "Contained Calls"
+        when ${agentTransfer_flag}=0 and cast(${hung_up_flag} as int64)=1 then "Hungup Calls"
         when ${agentTransfer_flag} = 1 and ${plannedAgentTransfer_flag} = 1 then "Planned Agent Transfer"
         when ${agentTransfer_flag} = 1 and ${requested_agent_flag} = 1 then "Unplanned Agent Transfers [Caller Requested]"
         else "Unplanned Agent Transfer [Others]" end;;
+  }
+
+  dimension: CSAT_score {
+    type: number
+    sql: ${TABLE}.csat_score ;;
   }
 
   # A measure is a field that uses a SQL aggregate function. Here are defined sum and average
@@ -129,6 +135,7 @@ view: ccai_session_data {
       date,
       week,
       month,
+      month_name,
       quarter,
       year
     ]
@@ -149,6 +156,8 @@ view: ccai_session_data {
     sql: ${TABLE}.exit_intent ;;
   }
 
+
+
   dimension: entry_page {
     type: string
     sql: ${TABLE}.entry_page ;;
@@ -158,6 +167,8 @@ view: ccai_session_data {
     type: string
     sql: ${TABLE}.exit_page ;;
   }
+
+
 
   dimension: first_intent {
     type: string
@@ -179,6 +190,7 @@ view: ccai_session_data {
       day_of_week,
       week,
       month,
+      month_name,
       quarter,
       year
     ]
@@ -340,10 +352,10 @@ view: ccai_session_data {
     sql: ${TABLE}.second_last_exit_intent ;;
   }
 
-  dimension: second_last_exit_page {
+  dimension: second_last_page {
     label: "Exit Page Breakdown"
     type: string
-    sql: ${TABLE}.second_last_exit_page ;;
+    sql: ${TABLE}.second_last_page ;;
   }
 
   dimension: session_id {
@@ -409,14 +421,21 @@ view: ccai_session_data {
   measure: total_contained_calls {
     type: sum_distinct
     sql_distinct_key: ${session_id} ;;
-    sql: ${containment_flag_excluding_AT} ;;
+    sql: cast(${containment_flag_excluding_AT} as int64) ;;
   }
 
   measure: total_hung_up_calls {
     type: sum_distinct
     sql_distinct_key: ${session_id} ;;
-    sql: ${hung_up_flag} ;;
+    sql: cast(${hung_up_flag} as int64) ;;
   }
+
+  measure: total_agent_transfer_failure {
+    type: sum_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: cast(${agent_transfer_failure} as int64) ;;
+  }
+
 
   measure: containment_rate {
     label: "deflected_rate"
@@ -453,6 +472,13 @@ view: ccai_session_data {
     sql_distinct_key: ${session_id};;
     sql: ${caller_requested_agent_transfer} ;;
     value_format: "0.00%"
+  }
+
+  measure: average_CSAT_score {
+    type: average_distinct
+    sql_distinct_key: ${session_id};;
+    sql: ${CSAT_score} ;;
+    value_format: "0.000"
   }
 
 #### metrics with embedded titles
