@@ -44,4 +44,10 @@ explore: dialogflow_bigquery_export_data_cleaned {
     relationship: many_to_one
     sql_on: ${dialogflow_bigquery_export_data_cleaned.session_id}=${sankey_page.session_id} ;;
   }
+
+  join: collapsible_tree_page {
+    type: left_outer
+    relationship: one_to_one
+    sql_on: ${dialogflow_bigquery_export_data_cleaned.session_id}=${collapsible_tree_page.session_id} ;;
+  }
 }

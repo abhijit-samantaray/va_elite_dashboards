@@ -40,7 +40,7 @@ view: dialogflow_bigquery_export_data_cleaned {
   dimension: intent_for_logs {
     label: "Action"
     type: string
-    sql: case when ${match_type}type}="INTENT" or ${match_type}type}="DIRECT_INTENT" then ${intent_triggered} else ${match_type}type} end ;;
+    sql: case when ${match_type}="INTENT" or ${match_type}="DIRECT_INTENT" then ${intent_triggered} else ${match_type} end ;;
   }
 
   dimension: interaction_id {
