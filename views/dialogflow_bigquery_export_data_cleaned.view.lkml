@@ -279,6 +279,15 @@ view: dialogflow_bigquery_export_data_cleaned {
     value_format: "0.000"
   }
 
+  dimension: sentiment_category {
+    type: string
+    description: "Negative sentiment score is bad, 0 sentiment score is neutral, and positive sentiment score is good."
+    sql: CASE
+              WHEN ${sentiment_score} <= -0.05 THEN "Negative"
+              WHEN ${sentiment_score} >= 0.05 THEN "Positive"
+              ELSE "Neutral" END;;
+  }
+
   measure: total_sentiment_magnitude {
     type: sum
     sql: ${sentiment_magnitude} ;;
@@ -293,6 +302,12 @@ view: dialogflow_bigquery_export_data_cleaned {
     label: "Total calls"
     type: count_distinct
     sql:${session_id}  ;;
+  }
+
+  measure: total_responses {
+    description: "Total number of messages"
+    type: count_distinct
+    sql: ${response_id} ;;
   }
 
   measure: avg_session_per_day {

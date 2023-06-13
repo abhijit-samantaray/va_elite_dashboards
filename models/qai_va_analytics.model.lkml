@@ -32,4 +32,16 @@ explore: dialogflow_bigquery_export_data_cleaned {
     relationship: many_to_one
     sql_on: ${dialogflow_bigquery_export_data_cleaned.session_id} = ${ccai_session_data.session_id} ;;
   }
+
+  join: repeat_caller_flag {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${dialogflow_bigquery_export_data_cleaned.session_id}=${repeat_caller_flag.session_id} ;;
+  }
+
+  join: sankey_page {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${dialogflow_bigquery_export_data_cleaned.session_id}=${sankey_page.session_id} ;;
+  }
 }
