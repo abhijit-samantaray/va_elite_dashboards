@@ -376,6 +376,7 @@ view: ccai_session_data {
     value_format: "[mm]\" m \"ss\" s\""
   }
 
+
   measure: count_session {
     label: "Total calls"
     type: count_distinct
@@ -479,6 +480,40 @@ view: ccai_session_data {
     sql_distinct_key: ${session_id};;
     sql: ${CSAT_score} ;;
     value_format: "0.000"
+  }
+
+  measure: total_confirm_issue_resolved {
+    description: "Count of sessions where status =CONFIRM_ISSUE_RESOLVED"
+    type: count_distinct
+    sql: ${session_id} ;;
+    filters: [dialogflow_bigquery_export_data_cleaned.intent_triggered: "CONFIRM_ISSUE_RESOLVED"]
+  }
+
+
+  measure: Calls_beyond_Avg_Call_Length{
+    hidden: yes
+    type:count_distinct
+    sql: ${session_id} ;;
+    filters: [is_beyond_duration: "yes"]
+
+  }
+
+  measure:per_calls_beyond_avg_call_Length {
+    type: number
+    sql: ${Calls_beyond_Avg_Call_Length}/nullif(${count_session},0) ;;
+    value_format_name: percent_2
+  }
+
+  dimension:avg_duration2 {
+    hidden: yes
+    type: number
+    sql: ${conversation_length_in_seconds}/86400 ;;
+  }
+
+  dimension: is_beyond_duration {
+    hidden: yes
+    type: yesno
+    sql: ${conversation_length_in_seconds} > ${avg_duration2};;
   }
 
 #### metrics with embedded titles

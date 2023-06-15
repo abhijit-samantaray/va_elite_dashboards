@@ -249,6 +249,28 @@ view: dialogflow_bigquery_export_data_cleaned {
     sql: ${TABLE}.time_zone ;;
   }
 
+  dimension: conversation_journey {
+    label: "Conversation Journey"
+    type: string
+    sql: ${TABLE}.session_id ;;
+    html:  <a target="new"
+          href="https://quantiphi.looker.com/dashboards/1616?Call+ID={{session_id}}"><button style="
+                flex: 1 1 auto;
+                margin: 10px;
+                padding: 7px;
+                border: none;
+                background: none;
+                text-align: center;
+                transition: 0.5s;
+                background-size: 200% auto;
+                color: white;
+                box-shadow: 0 0 20px #eee;
+                border-radius: 7px;
+                background-image: linear-gradient(to right, #005495 0%, #348bbc 51%,  #19a3dc 100%)
+                ">Click Here</button></a> ;;
+                # html: <a target="new" href="https://tiaa.cloud.looker.com/dashboards/28?Session+ID={{ value }}"><img src="https://media1.giphy.com/media/hHjOpLaawe5rvWvcTn/giphy.gif" width="100%" height="100%"></a> ;;
+    }
+
   dimension: user_query {
     label: "User Request"
     type: string
