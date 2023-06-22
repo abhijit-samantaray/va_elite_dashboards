@@ -16,8 +16,7 @@ view: repeat_caller_flag {
             ---Finding which caller who has called for same flow and storing 1 as a floag for the phone number
             repeat_caller as(select
             flowname_lead.*,
-            case when timestamp_diff(request_time, next_timestamp, hour)<=24 then 1 else 0 end as repeat_call,
-            --max(case when timestamp_diff(request_time, next_timestamp, hour)<=24 then 1 else 0 end) over (partition by phone_number) as repeat_call_flag
+            max(case when timestamp_diff(request_time, next_timestamp, hour)<=24 then 1 else 0 end) over (partition by phone_number) as repeat_call_flag
             randbetween(0,1) as repeat_call_flag -- dummy query to generate data
             from flowname_lead)
             select
