@@ -2,8 +2,9 @@
   title: 'Virtual Agent Analytics '
   layout: newspaper
   preferred_viewer: dashboards-next
+  crossfilter_enabled: true
   description: ''
-  preferred_slug: 04jJWZARCvHXggXst07RTn
+  preferred_slug: iLPdXGmpGdLrYbNHTXhlWM
   elements:
   - title: Total Sessions
     name: Total Sessions
@@ -26,7 +27,7 @@
     show_view_names: false
     defaults_version: 1
     listen:
-      Date Date: ccai_session_data.date_date
+      Date: ccai_session_data.date_date
     row: 4
     col: 0
     width: 8
@@ -49,11 +50,11 @@
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
-    single_value_title: Average sessions per day
+    single_value_title: Average Sessions Per Day
     show_view_names: false
     defaults_version: 1
     listen:
-      Date Date: ccai_session_data.date_date
+      Date: ccai_session_data.date_date
     row: 4
     col: 8
     width: 8
@@ -76,12 +77,12 @@
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
-    single_value_title: Average queries per session
+    single_value_title: Average Queries Per Session
     show_view_names: false
     defaults_version: 1
     hidden_pivots: {}
     listen:
-      Date Date: ccai_session_data.date_date
+      Date: ccai_session_data.date_date
     row: 4
     col: 16
     width: 8
@@ -117,7 +118,7 @@
     hidden_pivots: {}
     hidden_fields: [dialogflow_bigquery_export_data_cleaned.count_session]
     listen:
-      Date Date: ccai_session_data.date_date
+      Date: ccai_session_data.date_date
     row: 7
     col: 16
     width: 8
@@ -162,7 +163,7 @@
     hidden_pivots: {}
     hidden_fields: [dialogflow_bigquery_export_data_cleaned.count, dialogflow_bigquery_export_data_cleaned.success_rate]
     listen:
-      Date Date: ccai_session_data.date_date
+      Date: ccai_session_data.date_date
     row: 7
     col: 8
     width: 8
@@ -226,7 +227,7 @@
     totals_color: "#808080"
     defaults_version: 1
     listen:
-      Date Date: ccai_session_data.date_date
+      Date: ccai_session_data.date_date
     row: 7
     col: 0
     width: 8
@@ -284,7 +285,7 @@
     totals_color: "#808080"
     defaults_version: 1
     listen:
-      Date Date: ccai_session_data.date_date
+      Date: ccai_session_data.date_date
     row: 10
     col: 0
     width: 12
@@ -327,8 +328,8 @@
     show_silhouette: false
     totals_color: "#808080"
     color_application:
-      collection_id: standalone-project
-      palette_id: standalone-project-categorical-0
+      collection_id: quantiphi-color-codes
+      palette_id: quantiphi-color-codes-categorical-0
       options:
         steps: 5
     y_axes: [{label: '', orientation: bottom, series: [{axisId: dialogflow_bigquery_export_data_cleaned.count_session,
@@ -338,9 +339,11 @@
     x_axis_label: Day of week
     x_axis_zoom: true
     y_axis_zoom: true
+    series_colors:
+      dialogflow_bigquery_export_data_cleaned.count_session: "#5177af"
     defaults_version: 1
     listen:
-      Date Date: ccai_session_data.date_date
+      Date: ccai_session_data.date_date
     row: 10
     col: 12
     width: 12
@@ -353,7 +356,7 @@
     fields: [ccai_session_data.duration_bucket, ccai_session_data.count_session, ccai_session_data.avg_query_per_session,
       ccai_session_data.average_sentiment_score]
     filters:
-      ccai_session_data.duration_bucket: "-null"
+      ccai_session_data.duration_bucket: "- NULL"
     sorts: [ccai_session_data.average_sentiment_score desc 0]
     limit: 500
     column_limit: 50
@@ -389,7 +392,7 @@
     header_background_color: "#7CC8FA"
     defaults_version: 1
     listen:
-      Date Date: ccai_session_data.date_date
+      Date: ccai_session_data.date_date
     row: 17
     col: 0
     width: 16
@@ -415,7 +418,7 @@
     single_value_title: "% Calls Beyond Average Call Length"
     defaults_version: 1
     listen:
-      Date Date: ccai_session_data.date_date
+      Date: ccai_session_data.date_date
     row: 17
     col: 16
     width: 8
@@ -428,26 +431,28 @@
       <table style="width:100%; border-radius: 6px; background-color:#FFFFFF; margin: 0px;"><tr>
                 <td class="vis" style="width:80%; text-align:left; padding-left:10px;">
                   <h1 style="color:#005495; margin-bottom: 0px;" > Virtual Agent Analytics </h1><br>
-                  <div style="letter-spacing:0.3px;line-height:1;">
                   <table style="letter-spacing:0.3px;line-height:1.5; margin: 0px;"><tr><td style="width:30%;">
                   <font color="#129fd9" size="3"> Virtual Agent Analytics </font>
                   </td><td style="width:20%;">
-                  <a href="/embed/dashboards/1654">
-                  <font color="#005495" size="3">| User Analytics</font></a>
+                  <a href="/embed/dashboards/1644">
+                  <font color="#005495" size="3">| User Analytics </font></a>
                   </td><td style="width:30%;">
-                  <a href="/embed/dashboards/1656">
-                  <font color="#005495" size="3">| Action Analytics</font></a>
+                  <a href="/embed/dashboards/1647">
+                  <font color="#005495" size="3">| Action Analytics </font></a>
                   </td></tr><tr><td>
-                  <a href="/embed/dashboards/1657">
-                  <font color="#005495" size="3"> Agent Transfer Analytics</font></a>
+                  <a href="/embed/dashboards/1648">
+                  <font color="#005495" size="3"> Agent Transfer Analytics </font></a>
                   </td><td>
-
+                  <a href="/embed/dashboards/1650">
+                  <font color="#005495" size="3">| Call Flow [Sankey] </font></a>
+                  </td><td>
+                  <a href="/embed/dashboards/1652">
+                  <font color="#005495" size="3">| Call Flow [Collapsible Tree] </font></a>
                   </td></tr></table>
                   <br/>
-                  </div>
                 </td>
                 <td>
-                  <div><img style="width:100%" src="https://logovectorseek.com/wp-content/uploads/2021/06/quantiphi-inc-logo-vector.png"></div>
+                  <div><img style="width:100%;" src="https://logovectorseek.com/wp-content/uploads/2021/06/quantiphi-inc-logo-vector.png"></div>
                 </td>
               </tr></table>
     row: 0
@@ -455,15 +460,15 @@
     width: 24
     height: 4
   filters:
-  - name: Date Date
-    title: Date Date
+  - name: Date
+    title: Date
     type: field_filter
     default_value: 90 day
     allow_multiple_values: true
     required: false
     ui_config:
-      type: relative_timeframes
-      display: inline
+      type: advanced
+      display: popover
       options: []
     model: qai_va_analytics
     explore: dialogflow_bigquery_export_data_cleaned
