@@ -3,7 +3,7 @@
   layout: newspaper
   preferred_viewer: dashboards-next
   description: ''
-  preferred_slug: BNeOwwVQjLO6rle2r3sxAj
+  preferred_slug: 04jJWZARCvHXggXst07RTn
   elements:
   - title: Total Sessions
     name: Total Sessions
@@ -26,7 +26,7 @@
     show_view_names: false
     defaults_version: 1
     listen:
-      Date: ccai_session_data.date_date
+      Date Date: ccai_session_data.date_date
     row: 4
     col: 0
     width: 8
@@ -53,7 +53,7 @@
     show_view_names: false
     defaults_version: 1
     listen:
-      Date: ccai_session_data.date_date
+      Date Date: ccai_session_data.date_date
     row: 4
     col: 8
     width: 8
@@ -81,7 +81,7 @@
     defaults_version: 1
     hidden_pivots: {}
     listen:
-      Date: ccai_session_data.date_date
+      Date Date: ccai_session_data.date_date
     row: 4
     col: 16
     width: 8
@@ -117,7 +117,7 @@
     hidden_pivots: {}
     hidden_fields: [dialogflow_bigquery_export_data_cleaned.count_session]
     listen:
-      Date: ccai_session_data.date_date
+      Date Date: ccai_session_data.date_date
     row: 7
     col: 16
     width: 8
@@ -162,7 +162,7 @@
     hidden_pivots: {}
     hidden_fields: [dialogflow_bigquery_export_data_cleaned.count, dialogflow_bigquery_export_data_cleaned.success_rate]
     listen:
-      Date: ccai_session_data.date_date
+      Date Date: ccai_session_data.date_date
     row: 7
     col: 8
     width: 8
@@ -226,7 +226,7 @@
     totals_color: "#808080"
     defaults_version: 1
     listen:
-      Date: ccai_session_data.date_date
+      Date Date: ccai_session_data.date_date
     row: 7
     col: 0
     width: 8
@@ -284,7 +284,7 @@
     totals_color: "#808080"
     defaults_version: 1
     listen:
-      Date: ccai_session_data.date_date
+      Date Date: ccai_session_data.date_date
     row: 10
     col: 0
     width: 12
@@ -340,7 +340,7 @@
     y_axis_zoom: true
     defaults_version: 1
     listen:
-      Date: ccai_session_data.date_date
+      Date Date: ccai_session_data.date_date
     row: 10
     col: 12
     width: 12
@@ -389,7 +389,7 @@
     header_background_color: "#7CC8FA"
     defaults_version: 1
     listen:
-      Date: ccai_session_data.date_date
+      Date Date: ccai_session_data.date_date
     row: 17
     col: 0
     width: 16
@@ -415,7 +415,7 @@
     single_value_title: "% Calls Beyond Average Call Length"
     defaults_version: 1
     listen:
-      Date: ccai_session_data.date_date
+      Date Date: ccai_session_data.date_date
     row: 17
     col: 16
     width: 8
@@ -429,21 +429,24 @@
                 <td class="vis" style="width:80%; text-align:left; padding-left:10px;">
                   <h1 style="color:#005495; margin-bottom: 0px;" > Virtual Agent Analytics </h1><br>
                   <div style="letter-spacing:0.3px;line-height:1;">
-                  <table><tr><td style="width:30%;">
-                  <font color="#129fd9" size="3"> Virtual Agent Analytics</font>
+                  <table style="letter-spacing:0.3px;line-height:1.5; margin: 0px;"><tr><td style="width:30%;">
+                  <font color="#129fd9" size="3"> Virtual Agent Analytics </font>
                   </td><td style="width:20%;">
-                  <a href="/embed/dashboards/1641">
-                  <font color="#005495" size="3">| User Analytics </font></a>
+                  <a href="/embed/dashboards/1654">
+                  <font color="#005495" size="3">| User Analytics</font></a>
                   </td><td style="width:30%;">
-                  <a href="/embed/dashboards/1642">
-                  <font color="#005495" size="3">| Action Analytics </font></a>
+                  <a href="/embed/dashboards/1656">
+                  <font color="#005495" size="3">| Action Analytics</font></a>
                   </td></tr><tr><td>
+                  <a href="/embed/dashboards/1657">
+                  <font color="#005495" size="3"> Agent Transfer Analytics</font></a>
+                  </td><td>
 
                   </td></tr></table>
                   <br/>
                   </div>
                 </td>
-                <td style =  "text-align:right;">
+                <td>
                   <div><img style="width:100%" src="https://logovectorseek.com/wp-content/uploads/2021/06/quantiphi-inc-logo-vector.png"></div>
                 </td>
               </tr></table>
@@ -452,15 +455,15 @@
     width: 24
     height: 4
   filters:
-  - name: Date
-    title: Date
+  - name: Date Date
+    title: Date Date
     type: field_filter
     default_value: 90 day
     allow_multiple_values: true
     required: false
     ui_config:
-      type: advanced
-      display: popover
+      type: relative_timeframes
+      display: inline
       options: []
     model: qai_va_analytics
     explore: dialogflow_bigquery_export_data_cleaned
